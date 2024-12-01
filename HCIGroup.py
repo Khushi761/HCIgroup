@@ -46,8 +46,20 @@ class Application(tk.Tk):
             self.load_help_page()
 
     def load_dashboard_page(self):
-        # Placeholder for Dashboard content
         tk.Label(self.main_frame, text="Dashboard", font=('Helvetica', 24)).pack(pady=20)
+
+        content_frame = tk.Frame(self.main_frame, bg='#D3C6B3')
+        content_frame.pack(pady=20, padx=20, fill='both', expand=True)
+        content_frame.grid_columnconfigure(0, weight=1)
+        content_frame.grid_columnconfigure(1, weight=1)
+        content_frame.grid_rowconfigure(0, weight=1)
+        content_frame.grid_rowconfigure(1, weight=1)
+
+        self.display_image(content_frame, "Graphs/GPSmap.png", 0, 0)
+        self.display_image(content_frame, "Graphs/Popularity.png", 0, 1)
+        self.display_image(content_frame, "Graphs/Heatmap.png", 1, 0)
+        self.display_image(content_frame, "Graphs/gender_performance.png", 1, 1)
+
 
     def load_modules_page(self):
         # Create a frame for the top section containing the search bar and profile circle
@@ -109,7 +121,7 @@ class Application(tk.Tk):
         try:
             # Load the image using Pillow
             image = Image.open(image_path)
-            image = image.resize((400, 300), Image.ANTIALIAS)  # Resize image as needed
+            image = image.resize((400, 300), Image.LANCZOS)  # Resize image as needed
             photo = ImageTk.PhotoImage(image)
 
             # Create label to hold the image
