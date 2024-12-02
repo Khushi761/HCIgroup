@@ -50,19 +50,124 @@ class Application(tk.Tk):
             self.load_help_page()
 
     def load_dashboard_page(self):
-        tk.Label(self.main_frame, text="Dashboard", font=('Helvetica', 24)).pack(pady=20)
+        # Dashboard Header
+        tk.Label(self.main_frame, text="Dashboard", font=('Helvetica', 18)).pack(pady=10)
 
+        # Content Frame for Dashboard
         content_frame = tk.Frame(self.main_frame, bg='#D3C6B3')
-        content_frame.pack(pady=20, padx=20, fill='both', expand=True)
+        content_frame.pack(pady=10, padx=10, fill='both', expand=True)
         content_frame.grid_columnconfigure(0, weight=1)
         content_frame.grid_columnconfigure(1, weight=1)
         content_frame.grid_rowconfigure(0, weight=1)
         content_frame.grid_rowconfigure(1, weight=1)
 
+        # Region Graph (Static Image)
         self.display_image(content_frame, "Graphs/GPSmap.png", 0, 0)
-        self.display_image(content_frame, "Graphs/Popularity.png", 0, 1)
-        self.display_image(content_frame, "Graphs/Heatmap.png", 1, 0)
-        self.display_image(content_frame, "Graphs/gender_performance.png", 1, 1)
+
+        # Popularity Chart with Dropdown
+        popularity_frame = tk.Frame(content_frame, bg='#D3C6B3')
+        popularity_frame.grid(row=0, column=1, padx=5, pady=5, sticky='nsew')
+        tk.Label(popularity_frame, text="Select Popularity Chart:", font=('Helvetica', 12), bg='#D3C6B3').pack(pady=5)
+
+        popularity_options = {
+            "Enrollment Over Time": "Graphs/Popularity.png",
+            "Withdrawal Trends": "Graphs/Popularity2.png",
+            "Week-based Trends": "Graphs/Popularity3.png"
+        }
+        selected_popularity = tk.StringVar(value=list(popularity_options.keys())[0])
+
+        popularity_dropdown = ttk.Combobox(popularity_frame, textvariable=selected_popularity, values=list(popularity_options.keys()), state="readonly")
+        popularity_dropdown.pack(pady=5)
+
+        popularity_image_label = tk.Label(popularity_frame, bg='#D3C6B3')
+        popularity_image_label.pack(pady=5)
+
+        def update_popularity_chart(event=None):
+            chart_name = selected_popularity.get()
+            selected_image = popularity_options[chart_name]
+            try:
+                image = Image.open(selected_image)
+                image = image.resize((300, 200), Image.LANCZOS)
+                photo = ImageTk.PhotoImage(image)
+                popularity_image_label.config(image=photo)
+                popularity_image_label.image = photo
+            except Exception as e:
+                print(f"Error loading image {selected_image}: {e}")
+                popularity_image_label.config(text="Error loading image", image="")
+
+        popularity_dropdown.bind("<<ComboboxSelected>>", update_popularity_chart)
+        update_popularity_chart()
+
+        # Heatmap Chart with Dropdown
+        heatmap_frame = tk.Frame(content_frame, bg='#D3C6B3')
+        heatmap_frame.grid(row=1, column=0, padx=5, pady=5, sticky='nsew')
+        tk.Label(heatmap_frame, text="Select Heatmap:", font=('Helvetica', 12), bg='#D3C6B3').pack(pady=5)
+
+        heatmap_options = {
+            "Course Heatmap A": "Graphs/Heatmap.png",
+            "Course Heatmap B": "Graphs/Heatmap2.png",
+            "Course Heatmap C": "Graphs/Heatmap3.png"
+        }
+        selected_heatmap = tk.StringVar(value=list(heatmap_options.keys())[0])
+
+        heatmap_dropdown = ttk.Combobox(heatmap_frame, textvariable=selected_heatmap, values=list(heatmap_options.keys()), state="readonly")
+        heatmap_dropdown.pack(pady=5)
+
+        heatmap_image_label = tk.Label(heatmap_frame, bg='#D3C6B3')
+        heatmap_image_label.pack(pady=5)
+
+        def update_heatmap(event=None):
+            heatmap_name = selected_heatmap.get()
+            selected_image = heatmap_options[heatmap_name]
+            try:
+                image = Image.open(selected_image)
+                image = image.resize((300, 200), Image.LANCZOS)
+                photo = ImageTk.PhotoImage(image)
+                heatmap_image_label.config(image=photo)
+                heatmap_image_label.image = photo
+            except Exception as e:
+                print(f"Error loading image {selected_image}: {e}")
+                heatmap_image_label.config(text="Error loading image", image="")
+
+        heatmap_dropdown.bind("<<ComboboxSelected>>", update_heatmap)
+        update_heatmap()
+
+        # Performance Chart with Dropdown
+        performance_frame = tk.Frame(content_frame, bg='#D3C6B3')
+        performance_frame.grid(row=1, column=1, padx=5, pady=5, sticky='nsew')
+        tk.Label(performance_frame, text="Select Performance Metric:", font=('Helvetica', 12), bg='#D3C6B3').pack(pady=5)
+
+        performance_options = {
+            "Gender Performance": "Graphs/GenderPerformance.png",
+            "Age-Range Performance": "Graphs/AgeBandPerformance.png",
+            "Region Performance": "Graphs/RegionPerformance.png",
+            "Number of Attempts": "Graphs/PrevAttemptsPerformance.png"
+        }
+        selected_performance = tk.StringVar(value=list(performance_options.keys())[0])
+
+        performance_dropdown = ttk.Combobox(performance_frame, textvariable=selected_performance, values=list(performance_options.keys()), state="readonly")
+        performance_dropdown.pack(pady=5)
+
+        performance_image_label = tk.Label(performance_frame, bg='#D3C6B3')
+        performance_image_label.pack(pady=5)
+
+        def update_performance_chart(event=None):
+            metric_name = selected_performance.get()
+            selected_image = performance_options[metric_name]
+            try:
+                image = Image.open(selected_image)
+                image = image.resize((300, 200), Image.LANCZOS)
+                photo = ImageTk.PhotoImage(image)
+                performance_image_label.config(image=photo)
+                performance_image_label.image = photo
+            except Exception as e:
+                print(f"Error loading image {selected_image}: {e}")
+                performance_image_label.config(text="Error loading image", image="")
+
+        performance_dropdown.bind("<<ComboboxSelected>>", update_performance_chart)
+        update_performance_chart()
+
+
 
 
     def load_modules_page(self):
@@ -152,57 +257,52 @@ class Application(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
         container.grid_columnconfigure(1, weight=2)
 
+        # Scrollable Student Details
         stats_frame = tk.Frame(container, bg='#D3C6B3', padx=20, pady=20)
         stats_frame.grid(row=0, column=0, sticky='nsew')
 
-        tk.Label(stats_frame, text="Student Statistics", font=('Helvetica', 18, 'bold'), bg='#D3C6B3').pack(anchor='w', pady=(0, 20))
+        tk.Label(stats_frame, text="Student Details", font=('Helvetica', 18, 'bold'), bg='#D3C6B3').pack(anchor='w', pady=(0, 20))
 
-        detail_frame = tk.Frame(stats_frame, bg='#D3C6B3')
-        detail_frame.pack(fill='x', pady=10)
+        # Create a scrollable canvas for student attributes
+        canvas = tk.Canvas(stats_frame, bg='#D3C6B3', highlightthickness=0)
+        scrollbar = ttk.Scrollbar(stats_frame, orient='vertical', command=canvas.yview)
+        scrollable_frame = tk.Frame(canvas, bg='#D3C6B3')
 
-        self.student_details_labels = {}
-        labels = ["Age Band", "Gender", "Region", "Number of Credits", "Highest Qualification", "Disability", "No. of Attempts", "Final Results"]
+        # Ensure canvas resizes properly
+        scrollable_frame.bind(
+            "<Configure>",
+            lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
+        )
 
-        for label in labels:
-            frame = tk.Frame(detail_frame, bg='#D3C6B3')
-            frame.pack(fill='x', pady=5)
-            
-            tk.Label(frame, text=f"{label}:", font=('Helvetica', 12), bg='#D3C6B3').pack(side='left')
-            value_label = tk.Label(frame, text="", font=('Helvetica', 12, 'bold'), bg='#E0E0E0', width=20, anchor='w')
-            value_label.pack(side='right')
-            self.student_details_labels[label] = value_label
+        canvas.create_window((0, 0), window=scrollable_frame, anchor='nw')
+        canvas.configure(yscrollcommand=scrollbar.set)
 
-        # Pick a student to show data
+        canvas.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
+
+        # Display all attributes for a randomly selected student
         if not self.student_info.empty:
-            student_id = self.student_info.iloc[1]['id_student']
-            self.update_student_details(student_id)
+            student = self.student_info.sample(1).iloc[0]  # Randomly select a student
+            for column in self.student_info.columns:
+                frame = tk.Frame(scrollable_frame, bg='#D3C6B3', pady=5)
+                frame.pack(fill='x', pady=2)
+                tk.Label(
+                    frame, text=f"{column}:", font=('Helvetica', 12), bg='#D3C6B3'
+                ).pack(side='left', padx=5)
+                tk.Label(
+                    frame, text=f"{student[column]}", font=('Helvetica', 12, 'bold'), bg='#E0E0E0', width=25, anchor='w'
+                ).pack(side='left', padx=5)
+        else:
+            tk.Label(scrollable_frame, text="No student data available.", font=('Helvetica', 14), bg='#D3C6B3').pack(anchor='w', pady=10)
 
         heatmap_frame = tk.Frame(container, bg='white', padx=20, pady=20)
         heatmap_frame.grid(row=0, column=1, sticky='nsew')
 
         tk.Label(heatmap_frame, text="Performance Heatmap", font=('Helvetica', 18, 'bold'), bg='white').pack(pady=(0, 20))
-
-        # Generate and display the heatmap
+            # Generate and display the heatmap
         self.generate_heatmap()
         self.display_heatmap(heatmap_frame)
-
-    def update_student_details(self, student_id):
-        student_data = self.student_info[self.student_info['id_student'] == int(student_id)].iloc[0]
-
-        details = {
-            "Age Band": student_data['age_band'],
-            "Gender": student_data['gender'],
-            "Region": student_data['region'],
-            "Number of Credits": student_data['num_of_prev_attempts'],
-            "Highest Qualification": student_data['highest_education'],
-            "Disability": student_data['disability'],
-            "No. of Attempts": student_data['num_of_prev_attempts'],
-            "Final Results": student_data['final_result']
-        }
-
-        for label, value in details.items():
-            self.student_details_labels[label].config(text=value)
-
+        
     def generate_heatmap(self):
         # dataset placeholder
         heatmap_data = pd.DataFrame({
@@ -226,13 +326,14 @@ class Application(tk.Tk):
             # Load and display the heatmap
             image_path = "Graphs/student_heatmap.png"
             image = Image.open(image_path)
-            image = image.resize((600, 400), Image.LANCZOS)
+            image = image.resize((550, 400), Image.LANCZOS)
             photo = ImageTk.PhotoImage(image)
             label = tk.Label(parent, image=photo)
             label.image = photo
             label.pack()
         except Exception as e:
             print(f"Error displaying heatmap: {e}")
+
 
 
     def load_faqs_page(self):
