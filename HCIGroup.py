@@ -1,6 +1,10 @@
 import tkinter as tk
 from tkinter import ttk
 from PIL import Image, ImageTk
+import pandas as pd
+import os 
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 class Application(tk.Tk):
     def __init__(self):
@@ -132,8 +136,104 @@ class Application(tk.Tk):
             print(f"Error loading image {image_path}: {e}")
 
     def load_students_page(self):
-        # Placeholder for Students page content
-        tk.Label(self.main_frame, text="Students Page", font=('Helvetica', 24)).pack(pady=20)
+        # Load datasets
+        try:
+            base_dir = os.path.join(os.path.dirname(__file__), "anonymisedData")
+            self.student_info = pd.read_csv(os.path.join(base_dir, "studentInfo.csv"))
+        except FileNotFoundError as e:
+            print(f"File not found: {e.filename}")
+            self.student_info = pd.DataFrame()
+        except Exception as e:
+            print(f"Error loading datasets: {e}")
+
+        # Create the UI for the students page
+        container = tk.Frame(self.main_frame, bg='#D3C6B3')
+        container.pack(fill='both', expand=True, padx=20, pady=20)
+        container.grid_columnconfigure(0, weight=1)
+        container.grid_columnconfigure(1, weight=2)
+
+        stats_frame = tk.Frame(container, bg='#D3C6B3', padx=20, pady=20)
+        stats_frame.grid(row=0, column=0, sticky='nsew')
+
+        tk.Label(stats_frame, text="Student Statistics", font=('Helvetica', 18, 'bold'), bg='#D3C6B3').pack(anchor='w', pady=(0, 20))
+
+        detail_frame = tk.Frame(stats_frame, bg='#D3C6B3')
+        detail_frame.pack(fill='x', pady=10)
+
+        self.student_details_labels = {}
+        labels = ["Age Band", "Gender", "Region", "Number of Credits", "Highest Qualification", "Disability", "No. of Attempts", "Final Results"]
+
+        for label in labels:
+            frame = tk.Frame(detail_frame, bg='#D3C6B3')
+            frame.pack(fill='x', pady=5)
+            
+            tk.Label(frame, text=f"{label}:", font=('Helvetica', 12), bg='#D3C6B3').pack(side='left')
+            value_label = tk.Label(frame, text="", font=('Helvetica', 12, 'bold'), bg='#E0E0E0', width=20, anchor='w')
+            value_label.pack(side='right')
+            self.student_details_labels[label] = value_label
+
+        # Pick a student to show data
+        if not self.student_info.empty:
+            student_id = self.student_info.iloc[1]['id_student']
+            self.update_student_details(student_id)
+
+        heatmap_frame = tk.Frame(container, bg='white', padx=20, pady=20)
+        heatmap_frame.grid(row=0, column=1, sticky='nsew')
+
+        tk.Label(heatmap_frame, text="Performance Heatmap", font=('Helvetica', 18, 'bold'), bg='white').pack(pady=(0, 20))
+
+        # Generate and display the heatmap
+        self.generate_heatmap()
+        self.display_heatmap(heatmap_frame)
+
+    def update_student_details(self, student_id):
+        student_data = self.student_info[self.student_info['id_student'] == int(student_id)].iloc[0]
+
+        details = {
+            "Age Band": student_data['age_band'],
+            "Gender": student_data['gender'],
+            "Region": student_data['region'],
+            "Number of Credits": student_data['num_of_prev_attempts'],
+            "Highest Qualification": student_data['highest_education'],
+            "Disability": student_data['disability'],
+            "No. of Attempts": student_data['num_of_prev_attempts'],
+            "Final Results": student_data['final_result']
+        }
+
+        for label, value in details.items():
+            self.student_details_labels[label].config(text=value)
+
+    def generate_heatmap(self):
+        # dataset placeholder
+        heatmap_data = pd.DataFrame({
+            'id_student': [1, 2, 3, 4, 5],
+            'date_1': [5, 3, 6, 2, 4],
+            'date_2': [3, 6, 2, 5, 1],
+            'date_3': [4, 2, 5, 3, 6]
+        }).set_index('id_student')
+
+        # Generate heatmap and save it
+        plt.figure(figsize=(12, 8))
+        sns.heatmap(heatmap_data, cmap='coolwarm', cbar=True)
+        plt.title("Student Engagement Heatmap", fontsize=16)
+        plt.xlabel("Date", fontsize=12)
+        plt.ylabel("Student ID", fontsize=12)
+        plt.savefig("Graphs/student_heatmap.png")
+        plt.close()
+
+    def display_heatmap(self, parent):
+        try:
+            # Load and display the heatmap
+            image_path = "Graphs/student_heatmap.png"
+            image = Image.open(image_path)
+            image = image.resize((600, 400), Image.LANCZOS)
+            photo = ImageTk.PhotoImage(image)
+            label = tk.Label(parent, image=photo)
+            label.image = photo
+            label.pack()
+        except Exception as e:
+            print(f"Error displaying heatmap: {e}")
+
 
     def load_faqs_page(self):
         # Placeholder for FAQs page content
