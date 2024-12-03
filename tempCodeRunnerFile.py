@@ -1,0 +1,1 @@
+load_faqs_page(self):

@@ -337,8 +337,26 @@ class Application(tk.Tk):
 
 
     def load_faqs_page(self):
-        # Placeholder for FAQs page content
-        tk.Label(self.main_frame, text="FAQs Page", font=('Helvetica', 24)).pack(pady=20)
+        # Clear the main frame
+        for widget in self.main_frame.winfo_children():
+            widget.destroy()
+
+        # FAQs Header
+        tk.Label(self.main_frame, text="Frequently Asked Questions", font=('Helvetica', 24)).pack(pady=20)
+
+        # FAQs Content
+        faqs = [
+            ("What is this application?", "This application is a module dashboard for managing and viewing module data."),
+            ("How do I navigate?", "Use the sidebar to switch between different pages like Dashboard, Modules, Students, etc."),
+            ("Where can I find help?", "Visit the Help page for assistance and support."),
+        ]
+
+        # Display FAQs
+        for question, answer in faqs:
+            frame = tk.Frame(self.main_frame, bg='#D3C6B3', pady=10)
+            frame.pack(fill='x', padx=20)
+            tk.Label(frame, text=f"Q: {question}", font=('Helvetica', 16, 'bold'), bg='#D3C6B3').pack(anchor='w')
+            tk.Label(frame, text=f"A: {answer}", font=('Helvetica', 14), bg='#D3C6B3').pack(anchor='w', padx=20)
 
     def load_help_page(self):
         # Placeholder for Help page content
