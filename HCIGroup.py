@@ -337,7 +337,6 @@ class Application(tk.Tk):
 
 
     def load_faqs_page(self):
-        # Clear the main frame
         for widget in self.main_frame.winfo_children():
             widget.destroy()
 
