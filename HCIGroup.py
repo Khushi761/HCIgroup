@@ -334,8 +334,6 @@ class Application(tk.Tk):
         except Exception as e:
             print(f"Error displaying heatmap: {e}")
 
-
-
     def load_faqs_page(self):
         for widget in self.main_frame.winfo_children():
             widget.destroy()
@@ -358,8 +356,26 @@ class Application(tk.Tk):
             tk.Label(frame, text=f"A: {answer}", font=('Helvetica', 14), bg='#D3C6B3').pack(anchor='w', padx=20)
 
     def load_help_page(self):
-        # Placeholder for Help page content
+        for widget in self.main_frame.winfo_children():
+            widget.destroy()
+
+        # Help Page Header
         tk.Label(self.main_frame, text="Help Page", font=('Helvetica', 24)).pack(pady=20)
+
+        # Help Content
+        help_content = [
+            ("Getting Started", "To get started, use the sidebar to navigate through different sections of the application."),
+            ("Dashboard Overview", "The Dashboard provides a summary of key metrics and visualizations."),
+            ("Modules Page", "The Modules page allows you to view and manage module-specific information."),
+            ("Students Page", "The Students page provides detailed information about students and their performance."),
+            ("Contact Support", "For further assistance, contact support at support@example.com."),
+        ]
+
+        for title, description in help_content:
+            frame = tk.Frame(self.main_frame, bg='#D3C6B3', pady=10)
+            frame.pack(fill='x', padx=20)
+            tk.Label(frame, text=title, font=('Helvetica', 16, 'bold'), bg='#D3C6B3').pack(anchor='w')
+            tk.Label(frame, text=description, font=('Helvetica', 14), bg='#D3C6B3').pack(anchor='w', padx=20)
 
 if __name__ == "__main__":
     app = Application()
